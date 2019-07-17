@@ -16,7 +16,7 @@
       "type": "Feature",
       "properties": {
         "name": "Tempelhofer Feld",
-        "performance": 15
+        "performance": 64.5
       },
       "geometry": {
         "type": "Point",
