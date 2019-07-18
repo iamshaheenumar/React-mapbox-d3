@@ -11,6 +11,20 @@ var map = new mapboxgl.Map({
   zoom: 10.2,
   center: [55.125615, 25.00957]
 });
+
+var windowWidth = Math.max(
+    document.documentElement.clientWidth,
+    window.innerWidth || 0
+  ),
+  windowHeight = Math.max(
+    document.documentElement.clientHeight,
+    window.innerHeight || 0
+  );
+var circles;
+var x = d3
+  .scaleLinear()
+  .rangeRound([0, windowWidth])
+  .domain([0, 100]);
 //////////////////////////
 // Mapbox+D3 Connection
 //////////////////////////
@@ -21,74 +35,40 @@ var svg = d3.select(canvas).append("svg");
 // Load map and dataset
 map.on("load", function() {
   d3.json("data.json", function(err, data) {
-    drawData(data);
+    var swarm = d3
+      .beeswarm()
+      .data(data.features) // set the data to arrange
+      .distributeOn(function(d) {
+        // set the value accessor to distribute on
+        return x(d.properties.performance); // evaluated once on each element of data
+      }) // when starting the arrangement
+      .radius(7) // set the radius for overlapping detection
+      .orientation("horizontal") // set the orientation of the arrangement
+      // could also be 'vertical'
+      .side("symetric") // set the side(s) available for accumulation
+      // could also be 'positive' or 'negative'
+      .arrange();
+    drawData(swarm);
   });
 });
+
 // Project GeoJSON coordinate to the map's current state
 function project(d) {
   return map.project(new mapboxgl.LngLat(+d[0], +d[1]));
 }
-//////////////
-// D3 stuff
-//////////////
 // Draw GeoJSON data with d3
-var circles;
+
 function drawData(data) {
-  var margin = { top: 0, right: 0, bottom: 0, left: 0 },
-    width = window.innerWidth - margin.left - margin.right,
-    height = window.innerHeight - margin.top - margin.bottom;
-
-  var g = svg
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-  var cell = g
-    .append("g")
-    .attr("class", "cells")
-    .selectAll("g")
-    .data(
-      d3
-        .voronoi()
-        .extent([
-          [-margin.left, -margin.top],
-          [width + margin.right, height + margin.top]
-        ])
-        .x(function(d) {
-          return d.x;
-        })
-        .y(function(d) {
-          return d.y;
-        })
-        .polygons(data.features)
-    )
-    .enter()
-    .append("g");
-
   // Add circles
-  // circles = cell
-  //   .selectAll("circle")
-  //   .data(data.features)
-  //   .enter()
-  //   .append("circle")
-  //   .attr("r", 5)
-  //   .on("click", function(d) {
-  //     alert(d.properties.name + ":" + d.properties.performance);
-  //   });
-
-  cell
+  circles = svg
+    .selectAll("circle")
+    .data(data)
+    .enter()
     .append("circle")
     .attr("r", 5)
-    .attr("cx", function(d) {
-      console.log(d);
-      return d.data.x;
-    })
-    .attr("cy", function(d) {
-      return d.data.y;
+    .on("click", function(d) {
+      alert(d.datum.properties.name);
     });
-
-  cell.append("path").attr("d", function(d) {
-    return "M" + d.join("L") + "Z";
-  });
   // Call the update function
   update();
   // Update on map interaction
@@ -113,26 +93,14 @@ function update(transitionTime) {
       .transition()
       .duration(transitionTime)
       .attr("cx", function(d) {
-        return project(d.geometry.coordinates).x;
+        return project(d.datum.geometry.coordinates).x;
       })
       .attr("cy", function(d) {
-        return project(d.geometry.coordinates).y;
+        return project(d.datum.geometry.coordinates).y;
       });
     // Grid view
   } else if (view === "grid") {
     // Check window with and height
-    var windowWidth = Math.max(
-        document.documentElement.clientWidth,
-        window.innerWidth || 0
-      ),
-      windowHeight = Math.max(
-        document.documentElement.clientHeight,
-        window.innerHeight || 0
-      );
-    var x = d3
-      .scaleLinear()
-      .rangeRound([0, windowWidth])
-      .domain([0, 100]);
 
     svg.selectAll("circle").each(function(d) {
       var circle = d3.select(this);
@@ -140,10 +108,10 @@ function update(transitionTime) {
         .transition()
         .duration(transitionTime)
         .attr("cx", function(d) {
-          return x(d.properties.performance);
+          return d.x;
         })
         .attr("cy", function(d) {
-          return windowHeight / 2;
+          return d.y + windowHeight / 2;
         });
     });
   }
