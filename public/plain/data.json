@@ -2,7 +2,7 @@
   {
     "properties": {
       "name": "Treptower Park",
-      "performance": 65
+      "performance": 15
     },
     "geometry": {
       "type": "Point",

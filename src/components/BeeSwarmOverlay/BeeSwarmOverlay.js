@@ -4,12 +4,10 @@ import * as d3 from "d3";
 import { beeswarm } from "d3-beeswarm";
 
 import locations from "./data.json";
-let circles = null,
-  data = [];
 
 const BeeSwarmOverlay = ({ view }) => {
-  let svg;
-  const [isFirstRender, setIsFirstRender] = useState(true);
+  let circles = null,
+    data = [];
   useEffect(() => {
     // Prepare data for beeSwarm
     let x = d3
@@ -27,10 +25,6 @@ const BeeSwarmOverlay = ({ view }) => {
       .side("symetric")
       .arrange();
   });
-
-  // useEffect(()=>{
-  //   if(circles) circles.transition
-  // },[view])
 
   const svgRef = useRef(null);
 
@@ -52,12 +46,10 @@ const BeeSwarmOverlay = ({ view }) => {
       .attr("fill", "red");
 
     if (view === "MAP" && !isDragging) {
-      // if (circles) circles.remove();
-
       svg
         .selectAll("circle")
         .transition()
-        .duration(2000)
+        .duration(1000)
         .attr("cx", function(d) {
           return project(d.datum.geometry.coordinates)[0];
         })
@@ -70,7 +62,7 @@ const BeeSwarmOverlay = ({ view }) => {
       circles = svg
         .selectAll("circle")
         .transition()
-        .duration(2000)
+        .duration(1000)
         .attr("cx", function(d) {
           return d.x;
         })
