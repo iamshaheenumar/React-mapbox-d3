@@ -5,3 +5,15 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+
+.ViewSwitcher {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  background-color: #636767;
+  color: #fff;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 2;
+  font-size: calc(6px + 2vmin);
+}
