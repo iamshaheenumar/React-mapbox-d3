@@ -2,12 +2,17 @@ import React, { useRef, useEffect, useState } from "react";
 import { SVGOverlay } from "react-map-gl";
 import * as d3 from "d3";
 import { beeswarm } from "d3-beeswarm";
+import { Animate } from "react-move";
+import { easeExpOut } from "d3-ease";
 
+import usePrevious from "../../hooks/usePrevious";
 import locations from "./data.json";
 
 const BeeSwarmOverlay = ({ view }) => {
-  let circles = null,
-    data = [];
+  const prevView = usePrevious(view);
+
+  let circles = null;
+  let data = [];
   useEffect(() => {
     // Prepare data for beeSwarm
     let x = d3
@@ -29,47 +34,69 @@ const BeeSwarmOverlay = ({ view }) => {
   const svgRef = useRef(null);
 
   const _redraw = ({ width, height, isDragging, project, unproject }) => {
-    let svg = d3.select("svg");
+    console.log(view, prevView);
 
-    svg
-      .selectAll("circle")
-      .data(data)
-      .enter()
-      .append("circle")
-      .attr("cx", function(d) {
-        return project(d.datum.geometry.coordinates)[0];
-      })
-      .attr("cy", function(d) {
-        return project(d.datum.geometry.coordinates)[1];
-      })
-      .attr("r", 5)
-      .attr("fill", "red");
+    if (view === "MAP" && !prevView) {
+      circles = data.map((location, i) => (
+        <Animate
+          start={() => ({
+            x: project(location.datum.geometry.coordinates)[0],
+            y: project(location.datum.geometry.coordinates)[1]
+          })}
+          update={() => ({
+            x: [
+              view === "MAP"
+                ? project(location.datum.geometry.coordinates)[0]
+                : location.x
+            ],
+            y: [
+              view === "MAP"
+                ? project(location.datum.geometry.coordinates)[1]
+                : location.y + window.innerHeight / 2
+            ],
+            timing: { duration: 1000, ease: easeExpOut }
+          })}
+        >
+          {state => {
+            return (
+              <circle key={i} r={5} fill="#E26A71" cx={state.x} cy={state.y} />
+            );
+          }}
+        </Animate>
+      ));
+      console.log("hit");
 
-    if (view === "MAP" && !isDragging) {
-      svg
-        .selectAll("circle")
-        .transition()
-        .duration(1000)
-        .attr("cx", function(d) {
-          return project(d.datum.geometry.coordinates)[0];
-        })
-        .attr("cy", function(d) {
-          return project(d.datum.geometry.coordinates)[1];
-        })
-        .attr("r", 5)
-        .attr("fill", "red");
-    } else if (view === "VIZ") {
-      circles = svg
-        .selectAll("circle")
-        .transition()
-        .duration(1000)
-        .attr("cx", function(d) {
-          return d.x;
-        })
-        .attr("cy", function(d) {
-          return d.y + window.innerHeight / 2;
-        });
+      return circles;
     }
+    // else {
+    //   circles = data.map((location, i) => (
+    //     <Animate
+    //       start={() => ({
+    //         x: location.x,
+    //         y: location.y + window.innerHeight / 2
+    //       })}
+    //       update={() => ({
+    //         x: [
+    //           view === "MAP"
+    //             ? project(location.datum.geometry.coordinates)[0]
+    //             : location.x
+    //         ],
+    //         y: [
+    //           view === "MAP"
+    //             ? project(location.datum.geometry.coordinates)[1]
+    //             : location.y + window.innerHeight / 2
+    //         ],
+    //         timing: { duration: 750, ease: easeExpOut }
+    //       })}
+    //     >
+    //       {state => {
+    //         return (
+    //           <circle key={i} r={5} fill="#E26A71" cx={state.x} cy={state.y} />
+    //         );
+    //       }}
+    //     </Animate>
+    //   ));
+    // }
   };
   return <SVGOverlay ref={svgRef} redraw={_redraw} />;
 };

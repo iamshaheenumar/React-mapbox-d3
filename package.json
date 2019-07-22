@@ -5,11 +5,14 @@
   "dependencies": {
     "d3": "^4.0.0",
     "d3-beeswarm": "0.0.5",
+    "d3-ease": "^1.0.5",
     "d3-scale": "^3.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-map-gl": "^5.0.7",
-    "react-scripts": "3.0.1"
+    "react-move": "^6.0.0",
+    "react-scripts": "3.0.1",
+    "react-transition-group": "^4.2.1"
   },
   "scripts": {
     "start": "react-scripts start",
