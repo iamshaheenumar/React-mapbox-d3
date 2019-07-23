@@ -34,69 +34,56 @@ const BeeSwarmOverlay = ({ view }) => {
   const svgRef = useRef(null);
 
   const _redraw = ({ width, height, isDragging, project, unproject }) => {
-    console.log(view, prevView);
+    circles = data.map(
+      (location, i) =>
+        !isDragging && (
+          <Animate
+            key={i}
+            start={() => ({
+              x:
+                view === "MAP"
+                  ? project(location.datum.geometry.coordinates)[0]
+                  : location.x,
+              y:
+                view === "MAP"
+                  ? project(location.datum.geometry.coordinates)[1]
+                  : location.y + window.innerHeight / 2
+            })}
+            enter={() => ({
+              x: [
+                view === "MAP"
+                  ? location.x
+                  : project(location.datum.geometry.coordinates)[0]
+              ],
+              y: [
+                view === "MAP"
+                  ? location.y + window.innerHeight / 2
+                  : project(location.datum.geometry.coordinates)[1]
+              ],
+              timing: { duration: 1000, ease: easeExpOut }
+            })}
+            update={() => ({
+              x: [
+                view === "MAP"
+                  ? project(location.datum.geometry.coordinates)[0]
+                  : location.x
+              ],
+              y: [
+                view === "MAP"
+                  ? project(location.datum.geometry.coordinates)[1]
+                  : location.y + window.innerHeight / 2
+              ],
+              timing: { duration: 1000, ease: easeExpOut }
+            })}
+          >
+            {state => {
+              return <circle r={5} fill="#E26A71" cx={state.x} cy={state.y} />;
+            }}
+          </Animate>
+        )
+    );
 
-    if (view === "MAP" && !prevView) {
-      circles = data.map((location, i) => (
-        <Animate
-          start={() => ({
-            x: project(location.datum.geometry.coordinates)[0],
-            y: project(location.datum.geometry.coordinates)[1]
-          })}
-          update={() => ({
-            x: [
-              view === "MAP"
-                ? project(location.datum.geometry.coordinates)[0]
-                : location.x
-            ],
-            y: [
-              view === "MAP"
-                ? project(location.datum.geometry.coordinates)[1]
-                : location.y + window.innerHeight / 2
-            ],
-            timing: { duration: 1000, ease: easeExpOut }
-          })}
-        >
-          {state => {
-            return (
-              <circle key={i} r={5} fill="#E26A71" cx={state.x} cy={state.y} />
-            );
-          }}
-        </Animate>
-      ));
-      console.log("hit");
-
-      return circles;
-    }
-    // else {
-    //   circles = data.map((location, i) => (
-    //     <Animate
-    //       start={() => ({
-    //         x: location.x,
-    //         y: location.y + window.innerHeight / 2
-    //       })}
-    //       update={() => ({
-    //         x: [
-    //           view === "MAP"
-    //             ? project(location.datum.geometry.coordinates)[0]
-    //             : location.x
-    //         ],
-    //         y: [
-    //           view === "MAP"
-    //             ? project(location.datum.geometry.coordinates)[1]
-    //             : location.y + window.innerHeight / 2
-    //         ],
-    //         timing: { duration: 750, ease: easeExpOut }
-    //       })}
-    //     >
-    //       {state => {
-    //         return (
-    //           <circle key={i} r={5} fill="#E26A71" cx={state.x} cy={state.y} />
-    //         );
-    //       }}
-    //     </Animate>
-    //   ));
-    // }
+    return circles;
   };
   return <SVGOverlay ref={svgRef} redraw={_redraw} />;
 };

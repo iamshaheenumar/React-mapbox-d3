@@ -18,8 +18,8 @@ const Map = ({ children, view }) => {
   });
 
   useEffect(() => {
-    if (view === "MAP") setViewport({ ...viewport, dragPan: true });
-    else setViewport({ ...viewport, dragPan: false });
+    if (view === "MAP") setViewport({ ...viewport, dragPan: false });
+    else setViewport({ ...viewport, dragPan: true });
   }, [view]);
 
   return (
