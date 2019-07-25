@@ -1,16 +1,13 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { SVGOverlay } from "react-map-gl";
 import * as d3 from "d3";
 import { beeswarm } from "d3-beeswarm";
 import { Animate } from "react-move";
 import { easeExpOut } from "d3-ease";
 
-import usePrevious from "../../hooks/usePrevious";
 import locations from "./data.json";
 
 const BeeSwarmOverlay = ({ view }) => {
-  const prevView = usePrevious(view);
-
   let circles = null;
   let data = [];
   useEffect(() => {
@@ -30,8 +27,6 @@ const BeeSwarmOverlay = ({ view }) => {
       .side("symetric")
       .arrange();
   });
-
-  const svgRef = useRef(null);
 
   const _redraw = ({ width, height, isDragging, project, unproject }) => {
     circles = data.map(
@@ -85,7 +80,7 @@ const BeeSwarmOverlay = ({ view }) => {
 
     return circles;
   };
-  return <SVGOverlay ref={svgRef} redraw={_redraw} />;
+  return <SVGOverlay redraw={_redraw} />;
 };
 
 export default BeeSwarmOverlay;
