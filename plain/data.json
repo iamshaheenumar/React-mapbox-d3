@@ -1,0 +1,92 @@
+[
+  {
+    "properties": {
+      "name": "Treptower Park",
+      "performance": 15
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [55.02434, 24.954663]
+    }
+  },
+  {
+    "properties": {
+      "name": "Tempelhofer Feld",
+      "performance": 64.5
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [55.142392, 25.123877]
+    }
+  },
+  {
+    "properties": {
+      "name": "Volskpark Friedrichshain",
+      "performance": 95
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [55.168473, 25.050497]
+    }
+  },
+  {
+    "properties": {
+      "name": "Gro�er Tiergarten",
+      "performance": 30
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [55.102584, 24.969603]
+    }
+  },
+  {
+    "properties": {
+      "name": "Park am Gleisdreieck",
+      "performance": 70
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [55.139646, 24.924777]
+    }
+  },
+  {
+    "properties": {
+      "name": "Volskpark Humboldthain",
+      "performance": 90
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [55.054063, 25.033836]
+    }
+  },
+  {
+    "properties": {
+      "name": "G�rlitzer Park",
+      "performance": 25
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [54.88179, 24.887546]
+    }
+  },
+  {
+    "properties": {
+      "name": "Volkspark Prenzlazer Berg",
+      "performance": 50
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [55.141229, 24.952931]
+    }
+  },
+  {
+    "properties": {
+      "name": "Tierpark Berlin",
+      "performance": 65
+    },
+    "geometry": {
+      "type": "Point",
+      "coordinates": [55.126815, 25.040057]
+    }
+  }
+]
